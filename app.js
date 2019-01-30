@@ -5,6 +5,8 @@ var path = require('path');
 var router = express.Router();
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var exphbs = require('express-handlebars');
+
 
 
 mongoose.Promise = global.Promise;
@@ -20,13 +22,24 @@ mongoose.connect("mongodb://localhost:27017/gameEntries", {
 
 require('./models/Entry');
 var Entry = mongoose.model('Entries');
+
+app.engine('handlebars',exphbs({
+    defaultLayout:'main'
+}));
+app.set('view engine', 'handlebars');
+
 // functions to use body parser 
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 
 //route to index.html
 router.get('/',function(req, res){
-    res.sendFile(path.join(__dirname+'/index.html'));
+    //res.sendFile(path.join(__dirname+'/index.html'));
+    var title = "Welcom to The Game App Page";
+
+    res.render('index', {
+        title:title
+    });
 });
 
 app.get('/getdata', function(req,res){
