@@ -45,6 +45,29 @@ router.get('/entries',function(req, res){
     });
 });
 
+//route to edit game entries
+router.get('/gameentries/editgame/:id',function(req, res){
+    Entry.findOne({
+        _id:req.params.id
+    }).then(function(entry){
+        res.render('gameentries/editgame',{entry:entry});
+    });
+});
+
+//route to put editied entry
+router.post('/editgame/:id', function(req,res){
+    Entry.findOne({
+        _id:req.params.id
+    }).then(function(entry){
+        entry.title = req.body.title;
+        entry.genre = req.body.genre;
+
+        entry.save().then(function(idea){
+            res.redirect('/');
+        })
+    });
+});
+
 router.get('/login',function(req, res){
     res.render('login', {
     });

@@ -1,17 +1,18 @@
 <div class="row">
     <div class="col-md-6 mx-auto">
         <div class="card card-body">
-            <form action="/addgame" method="POST">
+            <form action="/editgame/{{entry.id}}?_method=PUT" method="POST">
                     <h3>Enter Your Game Here:</h3> 
                     <div class="form-group">
-                        <label >Game Title</label>
+                        <label >Edit Game Title</label>
+                        <input type="hidden" name="_method" value="PUT">
                         <br>
-                        <input value ="{{entries.title}}" name="title" placeholder="Enter Game Title" class="form-control" required></input>
+                        <input value ="{{entry.title}}" name="title" placeholder="Enter Game Title" class="form-control" required></input>
                     </div>
                     <div class="form-group">
-                        <label>Game Genre</label>
+                        <label> Edit Game Genre</label>
                         <br>
-                        <textarea name="genre"  placeholder="Enter Game Genre" class="form-control" required>{{entries.genre}}</textarea>
+                        <textarea name="genre"  placeholder="Enter Game Genre" class="form-control" required>{{entry.genre}}</textarea>
                     </div>
                     <button type="submit" class="btn btn-primary">Update Game</button>
                     <!--<button type="submit">Submit Game</button>-->
