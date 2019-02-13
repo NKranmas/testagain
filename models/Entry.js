@@ -10,6 +10,9 @@ var EntrySchema = new Schema({
         type:String,
         required:true
     },
+    user:{
+        type:String,
+    },
     date:{
         type:Date,
         default:Date.now

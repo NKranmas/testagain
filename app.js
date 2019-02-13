@@ -29,6 +29,8 @@ mongoose.connect("mongodb://localhost:27017/gameEntries", {
 
 require('./models/Entry');
 var Entry = mongoose.model('Entries');
+require('./models/Users');
+var User = mongoose.model('Users');
 
 app.engine('handlebars',exphbs({
     defaultLayout:'main'
@@ -68,8 +70,7 @@ router.get('/',ensureAuthenticated ,function(req, res){
 });
 
 router.get('/entries',ensureAuthenticated, function(req, res){
-    res.render('gameentries/addgame', {
-    });
+    res.render('gameentries/addgame', {user:req.user});
 });
 
 //route to edit game entries
@@ -77,7 +78,7 @@ router.get('/gameentries/editgame/:id',function(req, res){
     Entry.findOne({
         _id:req.params.id
     }).then(function(entry){
-        res.render('gameentries/editgame',{entry:entry});
+        res.render('gameentries/editgame',{user:req.user,entry:entry});
     });
 });
 
@@ -86,6 +87,7 @@ router.put('/editgame/:id', function(req,res){
     Entry.findOne({
         _id:req.params.id
     }).then(function(entry){
+
         entry.title = req.body.title;
         entry.genre = req.body.genre;
 
@@ -107,18 +109,34 @@ router.post('/login', function(req,res,next){
     })(req,res,next);
 });
 
+router.get('/logout',function(req,res){
+    req.logout();
+    res.redirect('/login');
+});
+
 app.use(methodOvertide('_method'));
 
+//index route
 app.get('/',ensureAuthenticated, function(req,res){
     //console.log("Request made from fetch");
-    Entry.find({}).then(function(entries){
-        res.render("index",{entries:entries});
+    Entry.find({user:req.user.id}).then(function(entries){
+        res.render("index",{user:req.user,entries:entries});
+    });
+});
+
+// gamers route
+app.get('/gamers', function(req,res){
+    //console.log("Request made from fetch");
+    User.find({}).then(function(users){
+        res.render("games",{users:users});
     });
 });
 
 //route to entries.html
 router.get('/entries',ensureAuthenticated, function(req, res){
-    res.sendFile(path.join(__dirname+'/entries.html'));
+    res.sendFile(path.join(__dirname+'/entries.html')).then(function(entries){
+        res.render("index",{user:req.user});
+    });;
 });
 
 //post for form on addgame
@@ -126,7 +144,8 @@ app.post('/addgame', function(req,res){
     console.log(req.body);
     var newEntry = {
         title:req.body.title,
-        genre:req.body.genre
+        genre:req.body.genre,
+        user:req.user.id
     }
 
     new Entry(newEntry).save().then(function(entry){
