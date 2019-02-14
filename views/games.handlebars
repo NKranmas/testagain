@@ -7,6 +7,7 @@
     {{#each users}}
         <div class='entries'>
             <p class="font-weight-bold">User Name: {{name}}</p>
+            <a href="/userlist/{{id}}">See {{name}}'s List of Games</a>
             <p>Date Signed Up: {{date}}</p>
             <!--<a href="/gameentries/editgame/{{id}}" class="btn btn-dark mb-3">Edit</a>
             <form method="POST" action="/{{id}}?_method=Delete">
